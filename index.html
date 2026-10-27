@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thế Giới Mèo - Cat Breed Catalog & Interactive Hub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Quicksand & Nunito -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pastel: {
+                            pink: '#FFD1DC',
+                            peach: '#FFE5EC',
+                            cream: '#FFF9F5',
+                            mint: '#E8F5E9',
+                            purple: '#E1BEE7',
+                            yellow: '#FFF9C4',
+                            blue: '#E3F2FD',
+                            accent: '#FF758F',
+                            dark: '#4A3E3D',
+                            subtle: '#8C7A78'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Nunito', 'Quicksand', 'sans-serif'],
+                        display: ['Quicksand', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'cute': '0 8px 25px -5px rgba(255, 117, 143, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.05)',
+                        'cute-hover': '0 15px 30px -5px rgba(255, 117, 143, 0.25), 0 10px 12px -5px rgba(0, 0, 0, 0.08)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #FFF9F5;
+            color: #4A3E3D;
+        }
+        .bg-pattern {
+            background-image: radial-gradient(#FFD1DC 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFF9F5;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FFD1DC;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF758F;
+        }
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+        .animate-pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="bg-pattern antialiased min-h-screen flex flex-col justify-between selection:bg-pastel-pink selection:text-pastel-accent">
+
+    <!-- Navbar -->
+    <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-pastel-pink/30 transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pastel-accent to-pastel-pink flex items-center justify-center text-white text-2xl shadow-md group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-cat"></i>
+                </div>
+                <div>
+                    <span class="font-display font-extrabold text-2xl text-pastel-dark tracking-tight block leading-none">MèoYêu<span class="text-pastel-accent">.vn</span></span>
+                    <span class="text-xs text-pastel-subtle font-medium">Trạm Dừng Mèo Cụ</span>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center gap-8 font-semibold text-pastel-dark">
+                <a href="#search-section" class="hover:text-pastel-accent transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-magnifying-glass text-pastel-accent"></i> Tra cứu
+                </a>
+                <a href="#quiz-section" class="hover:text-pastel-accent transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> Trắc nghiệm
+                </a>
+                <a href="#sound-section" class="hover:text-pastel-accent transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-volume-high text-sky-400"></i> Tiếng Mèo Kêu
+                </a>
+                <a href="#care-tips" class="hover:text-pastel-accent transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-heart-pulse text-emerald-400"></i> Mẹo chăm sóc
+                </a>
+            </nav>
+
+            <!-- Quick Action Button -->
+            <div class="flex items-center gap-3">
+                <button onclick="playMeowSound('happy')" class="bg-pastel-peach border-2 border-pastel-pink text-pastel-accent font-bold px-4 py-2 rounded-full hover:bg-pastel-pink transition-all flex items-center gap-2 text-sm shadow-sm active:scale-95">
+                    <i class="fa-solid fa-[#FF758F] fa-paw"></i>
+                    <span class="hidden sm:inline">Phát tiếng Meow!</span>
+                </button>
+                <button id="mobile-menu-btn" class="md:hidden text-2xl text-pastel-dark p-2 focus:outline-none">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-pastel-pink/30 px-6 py-4 flex flex-col gap-4 font-semibold text-pastel-dark">
+            <a href="#search-section" class="mobile-link py-2 hover:text-pastel-accent"><i class="fa-solid fa-magnifying-glass w-6 text-pastel-accent"></i> Tra cứu giống mèo</a>
+            <a href="#quiz-section" class="mobile-link py-2 hover:text-pastel-accent"><i class="fa-solid fa-wand-magic-sparkles w-6 text-amber-400"></i> Trắc nghiệm chọn mèo</a>
+            <a href="#sound-section" class="mobile-link py-2 hover:text-pastel-accent"><i class="fa-solid fa-volume-high w-6 text-sky-400"></i> Tiếng Mèo Kêu</a>
+            <a href="#care-tips" class="mobile-link py-2 hover:text-pastel-accent"><i class="fa-solid fa-heart-pulse w-6 text-emerald-400"></i> Mẹo chăm sóc mèo</a>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow">
+
+        <!-- Hero Section -->
+        <section class="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-28">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <!-- Left Column Text -->
+                    <div class="text-center md:text-left space-y-6">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pastel-peach border border-pastel-pink/50 text-pastel-accent font-bold text-sm shadow-sm animate-bounce">
+                            <i class="fa-solid fa-sparkles"></i> Thế Giới Mèo Dễ Thương
+                        </div>
+                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-pastel-dark leading-tight">
+                            Khám Phá & Yêu Thương <span class="text-transparent bg-clip-text bg-gradient-to-r from-pastel-accent to-pink-500">Các Giống Mèo</span> Bốn Phương 🐾
+                        </h1>
+                        <p class="text-lg text-pastel-subtle max-w-xl mx-auto md:mx-0 font-medium">
+                            Tìm hiểu tính cách, nguồn gốc và mẹo chăm sóc chuẩn chỉnh cho “Boss” nhà bạn. Tìm ngay giống mèo hoàn hảo phù hợp với phong cách sống của bạn!
+                        </p>
+                        
+                        <!-- Quick Search in Hero -->
+                        <div class="pt-4 max-w-md mx-auto md:mx-0">
+                            <div class="relative flex items-center">
+                                <input type="text" id="hero-search" placeholder="Nhập tên giống mèo (vd: Anh Lông Ngắn, Ba Tư...)" class="w-full pl-12 pr-28 py-4 rounded-2xl border-2 border-pastel-pink/60 focus:border-pastel-accent focus:outline-none bg-white shadow-cute text-pastel-dark font-medium placeholder:text-gray-400 transition-all">
+                                <i class="fa-solid fa-magnifying-glass absolute left-4 text-pastel-accent text-xl"></i>
+                                <button onclick="scrollToSearchAndFilter()" class="absolute right-2 px-5 py-2.5 bg-pastel-accent text-white font-bold rounded-xl shadow-md hover:bg-pink-600 transition-all text-sm">
+                                    Tìm kiếm
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column Floating Image Banner -->
+                    <div class="relative flex justify-center">
+                        <div class="relative w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-gradient-to-tr from-pastel-pink via-pastel-peach to-pastel-yellow p-4 shadow-2xl animate-float">
+                            <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=800&q=80" alt="Mèo đáng yêu" class="w-full h-full object-cover rounded-full border-4 border-white shadow-inner">
+                            
+                            <!-- Decorative Floating Badges -->
+                            <div class="absolute -top-2 -right-2 bg-white px-4 py-2 rounded-2xl shadow-lg border border-pastel-pink/40 flex items-center gap-2">
+                                <span class="text-2xl">🐱</span>
+                                <div>
+                                    <p class="text-xs font-bold text-pastel-dark">10+ Giống mèo</p>
+                                    <p class="text-[10px] text-pastel-subtle">Phổ biến nhất</p>
+                                </div>
+                            </div>
+                            <div class="absolute -bottom-4 -left-4 bg-white px-4 py-2 rounded-2xl shadow-lg border border-pastel-pink/40 flex items-center gap-2">
+                                <span class="text-2xl">❤️</span>
+                                <div>
+                                    <p class="text-xs font-bold text-pastel-dark">100% Yêu Thương</p>
+                                    <p class="text-[10px] text-pastel-subtle">Kiến thức hữu ích</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search & Filter Section -->
+        <section id="search-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-cute border border-pastel-pink/30 space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 pb-6">
+                    <div>
+                        <h2 class="text-2xl font-extrabold text-pastel-dark flex items-center gap-2">
+                            <i class="fa-solid fa-filter text-pastel-accent"></i> Bộ Lọc & Tìm Kiếm Giống Mèo
+                        </h2>
+                        <p class="text-sm text-pastel-subtle">Lọc theo các tiêu chí để tìm được chú mèo ưng ý nhất</p>
+                    </div>
+                    
+                    <!-- Search Input -->
+                    <div class="relative min-w-[280px]">
+                        <input type="text" id="catalog-search" placeholder="Tìm theo tên..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-pastel-pink/60 focus:border-pastel-accent focus:outline-none bg-pastel-cream/50 text-sm">
+                        <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-pastel-subtle"></i>
+                    </div>
+                </div>
+
+                <!-- Filter Controls Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Kích thước -->
+                    <div>
+                        <label class="block text-xs font-bold text-pastel-dark uppercase tracking-wider mb-2">Kích thước</label>
+                        <select id="filter-size" class="w-full p-3 rounded-xl border border-pastel-pink/50 bg-pastel-cream/30 focus:outline-none focus:border-pastel-accent text-sm font-semibold">
+                            <option value="all">Tất cả kích thước</option>
+                            <option value="small">Nhỏ (Dưới 4kg)</option>
+                            <option value="medium">Trung bình (4 - 6kg)</option>
+                            <option value="large">Lớn (Trên 6kg)</option>
+                        </select>
+                    </div>
+
+                    <!-- Độ dài lông -->
+                    <div>
+                        <label class="block text-xs font-bold text-pastel-dark uppercase tracking-wider mb-2">Độ dài lông</label>
+                        <select id="filter-fur" class="w-full p-3 rounded-xl border border-pastel-pink/50 bg-pastel-cream/30 focus:outline-none focus:border-pastel-accent text-sm font-semibold">
+                            <option value="all">Tất cả độ dài lông</option>
+                            <option value="short">Lông ngắn</option>
+                            <option value="long">Lông dài / Vừa</option>
+                            <option value="none">Không lông (Sphynx)</option>
+                        </select>
+                    </div>
+
+                    <!-- Độ thân thiện -->
+                    <div>
+                        <label class="block text-xs font-bold text-pastel-dark uppercase tracking-wider mb-2">Mức độ thân thiện</label>
+                        <select id="filter-friendliness" class="w-full p-3 rounded-xl border border-pastel-pink/50 bg-pastel-cream/30 focus:outline-none focus:border-pastel-accent text-sm font-semibold">
+                            <option value="all">Tất cả mức độ</option>
+                            <option value="high">Rất quấn chủ (>= 4⭐)</option>
+                            <option value="medium">Vừa phải</option>
+                        </select>
+                    </div>
+
+                    <!-- Độ năng động -->
+                    <div>
+                        <label class="block text-xs font-bold text-pastel-dark uppercase tracking-wider mb-2">Mức độ năng động</label>
+                        <select id="filter-energy" class="w-full p-3 rounded-xl border border-pastel-pink/50 bg-pastel-cream/30 focus:outline-none focus:border-pastel-accent text-sm font-semibold">
+                            <option value="all">Tất cả mức độ</option>
+                            <option value="high">Năng động / Thích chạy nhảy</option>
+                            <option value="calm">Điềm tĩnh / Ngoan ngoãn</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Active Filters Reset -->
+                <div class="flex justify-between items-center pt-2">
+                    <span id="results-count" class="text-xs font-bold text-pastel-accent bg-pastel-peach px-3 py-1.5 rounded-lg">Đang hiển thị: 10 giống mèo</span>
+                    <button onclick="resetFilters()" class="text-xs text-pastel-subtle hover:text-pastel-accent underline font-semibold transition-colors flex items-center gap-1">
+                        <i class="fa-solid fa-rotate-right"></i> Xóa bộ lọc
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cat Cards Grid -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div id="cat-cards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Javascript sẽ render động danh sách mèo ở đây -->
+            </div>
+
+            <!-- Empty State Result -->
+            <div id="no-results" class="hidden text-center py-16 bg-white rounded-3xl border border-pastel-pink/30 shadow-sm">
+                <div class="text-6xl mb-4">😿</div>
+                <h3 class="text-xl font-bold text-pastel-dark">Không tìm thấy giống mèo phù hợp!</h3>
+                <p class="text-pastel-subtle mt-1 text-sm">Thử thay đổi từ khóa hoặc đặt lại bộ lọc xem sao bạn nhé.</p>
+                <button onclick="resetFilters()" class="mt-4 px-5 py-2.5 bg-pastel-accent text-white font-bold rounded-xl text-sm hover:bg-pink-600 transition-all">
+                    Xóa tất cả bộ lọc
+                </button>
+            </div>
+        </section>
+
+        <!-- Quiz Section: Interactive Quiz -->
+        <section id="quiz-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="bg-gradient-to-br from-pastel-peach via-white to-pastel-cream rounded-3xl p-6 sm:p-12 shadow-cute border-2 border-pastel-pink/40 relative overflow-hidden">
+                <div class="max-w-2xl mx-auto">
+                    <div class="text-center space-y-3 mb-8">
+                        <span class="bg-amber-100 text-amber-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Mini Quiz Thú Vị</span>
+                        <h2 class="text-3xl font-extrabold text-pastel-dark">Tìm Giống Mèo Phù Hợp Với Bạn 🎯</h2>
+                        <p class="text-pastel-subtle text-sm">Trả lời 4 câu hỏi ngắn để xem tính cách của bạn hợp cạ nhất với "Boss" nào nhé!</p>
+                    </div>
+
+                    <!-- Quiz Wizard Box -->
+                    <div id="quiz-container" class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-pastel-pink/30">
+                        <!-- Progress Bar -->
+                        <div class="mb-6">
+                            <div class="flex justify-between text-xs font-bold text-pastel-subtle mb-1">
+                                <span id="quiz-progress-text">Câu hỏi 1/4</span>
+                                <span id="quiz-progress-percent">25%</span>
+                            </div>
+                            <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                                <div id="quiz-progress-bar" class="bg-pastel-accent h-full transition-all duration-300" style="width: 25%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Question Dynamic Render -->
+                        <div id="quiz-content">
+                            <!-- Rendered by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Quiz Result Modal/Box -->
+                    <div id="quiz-result" class="hidden bg-white rounded-2xl p-6 sm:p-8 shadow-md border-2 border-pastel-accent text-center space-y-4 animate-fade-in">
+                        <div class="inline-block p-4 bg-pastel-peach rounded-full text-4xl mb-2">🎉</div>
+                        <h3 class="text-2xl font-extrabold text-pastel-dark">Giống Mèo Định Mệnh Của Bạn:</h3>
+                        <div id="quiz-result-card" class="p-4 bg-pastel-cream rounded-xl border border-pastel-pink/40 flex flex-col sm:flex-row items-center gap-4 text-left">
+                            <!-- Result dynamically injected -->
+                        </div>
+                        <button onclick="restartQuiz()" class="px-6 py-2.5 bg-pastel-accent text-white font-bold rounded-xl hover:bg-pink-600 transition-all text-sm">
+                            <i class="fa-solid fa-rotate-right mr-2"></i> Làm lại Quiz
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sound Generator & Interactive Meow Station -->
+        <section id="sound-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="bg-gradient-to-r from-pastel-blue via-indigo-50 to-pastel-pink rounded-3xl p-8 shadow-cute border border-white">
+                <div class="text-center max-w-xl mx-auto mb-8 space-y-2">
+                    <div class="w-12 h-12 rounded-full bg-white text-sky-500 text-2xl flex items-center justify-center mx-auto shadow-md">
+                        <i class="fa-solid fa-music"></i>
+                    </div>
+                    <h2 class="text-2xl font-extrabold text-pastel-dark">Thư Viện Tiếng Mèo Kêu (Sound Hub) 🔊</h2>
+                    <p class="text-pastel-subtle text-sm">Nhấn các nút bên dưới để nghe mô phỏng âm thanh dễ thương từ các tâm trạng của mèo!</p>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
+                    <button onclick="playMeowSound('happy')" class="p-4 bg-white rounded-2xl border-2 border-pink-200 hover:border-pastel-accent shadow-sm hover:shadow-md transition-all flex flex-col items-center gap-2 group active:scale-95">
+                        <span class="text-3xl group-hover:scale-125 transition-transform">😸</span>
+                        <span class="font-bold text-sm text-pastel-dark">Nũng nịu</span>
+                        <span class="text-[10px] text-pastel-subtle">Meow dễ thương</span>
+                    </button>
+
+                    <button onclick="playMeowSound('purr')" class="p-4 bg-white rounded-2xl border-2 border-purple-200 hover:border-purple-400 shadow-sm hover:shadow-md transition-all flex flex-col items-center gap-2 group active:scale-95">
+                        <span class="text-3xl group-hover:scale-125 transition-transform">😻</span>
+                        <span class="font-bold text-sm text-pastel-dark">Tiếng Rừ rừ</span>
+                        <span class="text-[10px] text-pastel-subtle">Sảng khoái, hạnh phúc</span>
+                    </button>
+
+                    <button onclick="playMeowSound('hungry')" class="p-4 bg-white rounded-2xl border-2 border-amber-200 hover:border-amber-400 shadow-sm hover:shadow-md transition-all flex flex-col items-center gap-2 group active:scale-95">
+                        <span class="text-3xl group-hover:scale-125 transition-transform">😿</span>
+                        <span class="font-bold text-sm text-pastel-dark">Đòi ăn</span>
+                        <span class="text-[10px] text-pastel-subtle">Meow kéo dài</span>
+                    </button>
+
+                    <button onclick="playMeowSound('curious')" class="p-4 bg-white rounded-2xl border-2 border-emerald-200 hover:border-emerald-400 shadow-sm hover:shadow-md transition-all flex flex-col items-center gap-2 group active:scale-95">
+                        <span class="text-3xl group-hover:scale-125 transition-transform">🙀</span>
+                        <span class="font-bold text-sm text-pastel-dark">Tò mò</span>
+                        <span class="text-[10px] text-pastel-subtle">Trít trít ngắn</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Care Tips & Advice Section (Accordion & Cards) -->
+        <section id="care-tips" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="text-center max-w-xl mx-auto mb-10 space-y-2">
+                <span class="text-xs font-bold text-emerald-600 bg-emerald-100 px-3 py-1 rounded-full uppercase">Cẩm Nang "Sen" Cần Biết</span>
+                <h2 class="text-3xl font-extrabold text-pastel-dark">Mẹo Chăm Sóc Mèo Khỏe Mạnh 🩺</h2>
+                <p class="text-pastel-subtle text-sm">Kiến thức cơ bản giúp bé mèo luôn vui vẻ, xinh xắn và ít bệnh tật.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Tip Card 1 -->
+                <div class="bg-white p-6 rounded-2xl border border-pastel-pink/30 shadow-cute hover:-translate-y-1 transition-all">
+                    <div class="w-12 h-12 bg-pastel-peach rounded-xl flex items-center justify-center text-pastel-accent text-xl mb-4 font-bold">
+                        <i class="fa-solid fa-bowl-food"></i>
+                    </div>
+                    <h3 class="font-extrabold text-lg text-pastel-dark mb-2">1. Dinh Dưỡng Cân Bằng</h3>
+                    <p class="text-sm text-pastel-subtle leading-relaxed">
+                        Mèo là động vật ăn thịt bắt buộc. Cung cấp thực phẩm giàu đạm (thịt gà, cá, hạt chất lượng) và luôn chuẩn bị sẵn nước sạch tươi mới mỗi ngày để tránh bệnh thận.
+                    </p>
+                </div>
+
+                <!-- Tip Card 2 -->
+                <div class="bg-white p-6 rounded-2xl border border-pastel-pink/30 shadow-cute hover:-translate-y-1 transition-all">
+                    <div class="w-12 h-12 bg-pastel-mint rounded-xl flex items-center justify-center text-emerald-600 text-xl mb-4 font-bold">
+                        <i class="fa-solid fa-syringe"></i>
+                    </div>
+                    <h3 class="font-extrabold text-lg text-pastel-dark mb-2">2. Tiêm Phòng & Xổ Giun</h3>
+                    <p class="text-sm text-pastel-subtle leading-relaxed">
+                        Chích ngừa đủ 3 mũi vắc-xin phòng bệnh nguy hiểm (Giảm bạch cầu, Viêm mũi...) và tiêm phòng dại định kỳ. Định kỳ xổ giun 3-6 tháng/lần.
+                    </p>
+                </div>
+
+                <!-- Tip Card 3 -->
+                <div class="bg-white p-6 rounded-2xl border border-pastel-pink/30 shadow-cute hover:-translate-y-1 transition-all">
+                    <div class="w-12 h-12 bg-pastel-yellow rounded-xl flex items-center justify-center text-amber-600 text-xl mb-4 font-bold">
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+                    <h3 class="font-extrabold text-lg text-pastel-dark mb-2">3. Vệ Sinh & Tương Tác</h3>
+                    <p class="text-sm text-pastel-subtle leading-relaxed">
+                        Dọn chậu cát tối thiểu 1-2 lần/ngày. Chải lông định kỳ giúp giảm búi lông trong dạ dày và dành 15 phút mỗi ngày chơi đùa cùng mèo để giảm stress.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal Xem Chi Tiết Giống Mèo -->
+    <div id="cat-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-pastel-pink/50 relative animate-scale-up">
+            
+            <!-- Close Button -->
+            <button onclick="closeModal()" class="absolute top-4 right-4 z-10 w-10 h-10 bg-white/80 hover:bg-white text-pastel-dark rounded-full flex items-center justify-center shadow-md transition-all">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+
+            <!-- Modal Body Content (Dynamic JS) -->
+            <div id="modal-content" class="p-6 sm:p-8 space-y-6">
+                <!-- Rendered dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-pastel-pink/30 py-10 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+            <div class="flex items-center justify-center gap-2">
+                <div class="w-8 h-8 rounded-xl bg-pastel-accent flex items-center justify-center text-white text-sm">
+                    <i class="fa-solid fa-cat"></i>
+                </div>
+                <span class="font-display font-extrabold text-xl text-pastel-dark">MèoYêu<span class="text-pastel-accent">.vn</span></span>
+            </div>
+            <p class="text-sm text-pastel-subtle max-w-md mx-auto">
+                Trang web dành riêng cho cộng đồng những người yêu mèo. Hãy yêu thương và chăm sóc các bé mèo chu đáo! 🐾
+            </p>
+            <p class="text-xs text-gray-400">© 2026 MèoYêu.vn - All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Database 10 giống mèo phổ biến
+        const catBreeds = [
+            {
+                id: 'british-shorthair',
+                nameVi: 'Mèo Anh Lông Ngắn',
+                nameEn: 'British Shorthair',
+                size: 'medium', // small, medium, large
+                sizeText: 'Trung bình - Lớn (4 - 8 kg)',
+                fur: 'short', // short, long, none
+                furText: 'Lông ngắn, dày mịn',
+                origin: 'Vương Quốc Anh 🇬🇧',
+                lifespan: '12 - 17 năm',
+                popularity: 'Rất cao (Top 1)',
+                image: 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=800&q=80',
+                gallery: [
+                    'https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?auto=format&fit=crop&w=800&q=80'
+                ],
+                badges: ['Điềm tĩnh', 'Dễ chăm sóc', 'Thích ôm'],
+                description: 'Mèo Anh Lông Ngắn sở hữu thân hình múp ráp, má phính tròn xoe ngọt ngào. Tính cách cực kỳ điềm tĩnh, không quá quấy phá, rất thích hợp cho người bận rộn.',
+                ratings: {
+                    affection: 5,   // Mức quấn chủ
+                    shedding: 3,     // Mức rụng lông
+                    intelligence: 4, // Thông minh
+                    energy: 2,       // Năng động
+                    trainability: 4  // Dễ huấn luyện
+                },
+                careTips: {
+                    diet: 'Khẩu phần giàu đạm, kiểm soát lượng hạt vì dễ bị béo phì.',
+                    grooming: 'Chải lông 1-2 lần/tuần để loại bỏ lông thừa.',
+                    health: 'Cần chú ý bệnh cơ tim phì đại (HCM) và béo phì.'
+                }
+            },
+            {
+                id: 'persian',
+                nameVi: 'Mèo Ba Tư',
+                nameEn: 'Persian Cat',
+                size: 'medium',
+                sizeText: 'Trung bình (3.5 - 5.5 kg)',
+                fur: 'long',
+                furText: 'Lông dài, xù dày',
+                origin: 'Iran (Ba Tư cũ) 🇮🇷',
+                lifespan: '12 - 15 năm',
+                popularity: 'Rất cao',
+                image: 'https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=800&q=80',
+                gallery: [
+                    'https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=800&q=80'
+                ],
+                badges: ['Quý phái', 'Lông xù', 'Nhẹ nhàng'],
+                description: 'Được mệnh danh là "Hoàng tử/Công chúa" của thế giới mèo nhờ bộ lông quý phái và khuôn mặt tịt dễ thương. Ngoan ngoãn, thích nằm lười.',
+                ratings: {
+                    affection: 5,
+                    shedding: 5,
+                    intelligence: 3,
+                    energy: 1,
+                    trainability: 3
+                },
+                careTips: {
+                    diet: 'Ăn thức ăn mềm, hạt thiết kế riêng cho giống mặt tịt.',
+                    grooming: 'Cần chải lông HẰNG NGÀY và lau mắt thường xuyên.',
+                    health: 'Dễ mắc bệnh đường hô hấp và thận đa nang.'
+                }
+            },
+            {
+                id: 'maine-coon',
+                nameVi: 'Mèo Maine Coon',
+                nameEn: 'Maine Coon',
+                size: 'large',
+                sizeText: 'Lớn khổng lồ (6 - 11 kg)',
+                fur: 'long',
+                furText: 'Lông dài, chống nước',
+                origin: 'Mỹ 🇺🇸',
+                lifespan: '12 - 15 năm',
+                popularity: 'Rất cao',
+                image: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=800&q=80',
+                gallery: [
+                    'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=800&q=80'
+                ],
+                badges: ['Gã khổng lồ hiền lành', 'Thích nước', 'Thông minh'],
+                description: 'Giống mèo nhà lớn nhất thế giới! Ngoại hình giống sư tử nhỏ nhưng tính cách cực kỳ hiền lành, thông minh và thân thiện như một chú chó nhỏ.',
+                ratings: {
+                    affection: 5,
+                    shedding: 4,
+                    intelligence: 5,
+                    energy: 4,
+                    trainability: 5
+                },
+                careTips: {
+                    diet: 'Cần lượng calo và protein cao hơn bình thường.',
+                    grooming: 'Chải lông 2-3 lần/tuần.',
+                    health: 'Chú ý sức khỏe khớp hông và cơ tim.'
+                }
+            },
+            {
+                id: 'ragdoll',
+                nameVi: 'Mèo Ragdoll',
+                nameEn: 'Ragdoll',
+                size: 'large',
+                sizeText: 'Lớn (5 - 9 kg)',
+                fur: 'long',
+                furText: 'Lông dài, mượt như nhung',
+                origin: 'Mỹ 🇺🇸',
+                lifespan: '12 - 17 năm',
+                popularity: 'Cực kỳ phổ biến',
+                image: 'https://images.unsplash.com/photo-1533743983669-94fa5c4338ec?auto=format&fit=crop&w=800&q=80',
+                gallery: [
+                    'https://images.unsplash.com/photo-1533743983669-94fa5c4338ec?auto=format&fit=crop&w=800&q=80'
+                ],
+                badges: ['Mắt xanh biếc', 'Ngoan ngoãn', 'Búp bê sống'],
+                description: 'Ragdoll nổi tiếng với đôi mắt xanh biếc hút hồn và bản tính thả lỏng cơ thể như một con búp bê vải khi được chủ bế lên.',
+                ratings: {
+                    affection: 5,
+                    shedding: 4,
+                    intelligence: 4,
+                    energy: 2,
+                    trainability: 4
+                },
+                careTips: {
+                    diet: 'Kiểm soát dinh dưỡng tránh tăng cân quá đà.',
+                    grooming: 'Lông ít bị rối hơn Ba Tư, chải 2 lần/tuần.',
+                    health: 'Cần duy trì nuôi hoàn toàn trong nhà.'
+                }
+            },
+            {
+                id: 'siamese',
+                nameVi: 'Mèo Xiêm',
+                nameEn: 'Siamese Cat',
+                size: 'medium',
+                sizeText: 'Trung bình mảnh mai (3 - 5 kg)',
+                fur: 'short',
+                furText: 'Lông ngắn, mượt sát da',
+                origin: 'Thái Lan 🇹🇭',
+                lifespan: '15 - 20 năm',
+                popularity: 'Phổ biến',
+                image: 'https://images.unsplash.com/photo-1513245543132-31f507417b26?auto=format&fit=crop&w=800&q=80',
+                gallery: [
+                    'https://images.unsplash.com/photo-1513245543132-31f507417b26?auto=format&fit=crop&w=800&q=80'
+                ],
+                badges: ['Hay nói', 'Thônh minh', 'Năng động'],
+                description: 'Mèo Xiêm có khuôn mặt V-line đặc trưng và đôi mắt xanh thẳm. Chúng nổi tiếng là giống mèo thích giao tiếp, cực kỳ "hay nói" với chủ.',
+                ratings: {
+                    affection: 5,
+                    shedding: 2,
+                    intelligence: 5,
+                    energy: 5,
+                    trainability: 5
+                },
+                careTips: {
+                    diet: 'Ăn uống đa dạng, giàu năng lượng.',
+                    grooming: 'Rất ít rụng lông, rảnh rỗi lau bằng khăn ẩm.',
+                    health: 'Rất sợ cô đơn, hãy dành thời gian chơi cùng.'
+                }
+            },
+            {
+                id: 'sphynx',
+                nameVi: 'Mèo Sphynx (Không lông)',
+                nameEn: 'Sphynx Cat',
+                size: 'medium',
+                sizeText: 'Trung bình (3.5 - 5 kg)',
+                fur: 'none',
+                furText: 'Không lông (Chỉ có tơ cực mỏng)',
+                origin: 'Canada 🇨🇦',
+                lifespan: '12 - 15 năm',
+                popularity: 'Độc đáo',
+                image: 'https://images.unsplash.com/photo-1606214174585-fe31582dc6ee?auto=format&fit=crop&w=800&q=80',
+                gallery: [
+                    'https://images.unsplash.com/photo-1606214174585-fe31582dc6ee?auto=format&fit=crop&w=800&q=80'
+                ],
+                badges: ['Không rụng lông', 'Quấn chủ 100%', 'Ấm áp'],
+                description: 'Ngoại hình độc lạ không lông giống như người ngoài hành tinh. Sphynx cực kỳ ấm áp, thích rúc vào người chủ và rất thông minh.',
+                ratings: {
+                    affection: 5,
+                    shedding: 1,
+                    intelligence: 5,
+                    energy: 5,
+                    trainability: 4
+                },
+                careTips: {
+                    diet: 'Khẩu phần ăn cao hơn để duy trì thân nhiệt.',
+                    grooming: 'Tắm thường xuyên 1-2 tuần/lần để sạch dầu trên da.',
+                    health: 'Cần giữ ấm mùa đông, mặc áo và tránh nắng gắt.'
+                }
+            },
+            {
+                id: 'scottish-fold',
+                nameVi: 'Mèo Scottish Fold',
+                nameEn: 'Scottish Fold',
+                size: 'medium',
+                sizeText: 'Trung bình (3 - 6 kg)',
+                fur: 'short',
+                furText: 'Lông ngắn / Dừa mượt',
+                origin: 'Scotland 🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+                lifespan: '11 - 14 năm',
+                popularity: 'Rất hot',
+                image: 'https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&w=800&q=80',
+                gallery: [
+                    'https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&w=800&q=80'
+                ],
+                badges: ['Tai cụp', 'Ngây thơ', 'Ngồi dáng Phật'],
+                description: 'Đôi tai cụp sát đầu độc đáo cùng ánh mắt ngơ ngác đáng yêu. Thích ngồi kiểu "Phật tọa" bằng hai chân sau cực hài hước.',
+                ratings: {
+                    affection: 5,
+                    shedding: 3,
+                    intelligence: 4,
+                    energy: 3,
+                    trainability: 4
+                },
+                careTips: {
+                    diet: 'Cung cấp dinh dưỡng phát triển xương khớp.',
+                    grooming: 'Vệ sinh nếp gấp tai cẩn thận hàng tuần.',
+                    health: 'Chú ý gen sụn khớp di truyền (Osteochondrodysplasia).'
+                }
+            },
+            {
+                id: 'bengal',
+                nameVi: 'Mèo Bengal',
+                nameEn: 'Bengal Cat',
+                size: 'medium',
+                sizeText: 'Trung bình - Lớn (4 - 7 kg)',
+                fur: 'short',
+                furText: 'Lông ngắn vằn báo lấp lánh',
+                origin: 'Mỹ 🇺🇸',
+                lifespan: '12 - 16 năm',
+                popularity: 'Trung bình - Cao',
+                image: 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=800&q=80',
+                gallery: [
+                    'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=800&q=80'
+                ],
+                badges: ['Vằn báo hoang dã', 'Thích nước', 'Cực năng động'],
+                description: 'Ngoại hình giống hệt một con báo hoa mây thu nhỏ. Thích bay nhảy, leo trèo cao và thậm chí thích đi bơi cùng chủ.',
+                ratings: {
+                    affection: 4,
+                    shedding: 2,
+                    intelligence: 5,
+                    energy: 5,
+                    trainability: 5
+                },
+                careTips: {
+                    diet: 'Thích ăn thịt tươi tươi / Pate protein cao.',
+                    grooming: 'Lông tự nhiên rất bóng mượt, ít cần chăm.',
+                    health: 'Cần có nhà rộng hoặc tháp leo trèo lớn.'
+                }
+            },
+            {
+                id: 'munchkin',
+                nameVi: 'Mèo Munchkin',
+                nameEn: 'Munchkin Cat',
+                size: 'small',
+                sizeText: 'Nhỏ (2.5 - 4 kg)',
+                fur: 'short',
+                furText: 'Lông ngắn / Vừa',
+                origin: 'Mỹ 🇺🇸',
+                lifespan: '12 - 15 năm',
+                popularity: 'Rất hot',
+                image: 'https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?auto=format&fit=crop&w=800&q=80',
+                gallery: [
+                    'https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?auto=format&fit=crop&w=800&q=80'
+                ],
+                badges: ['Chân ngắn nấm lửng', 'Tinh nghịch', 'Nhiệt tình'],
+                description: 'Chú corgi của thế giới mèo! Chân ngắn ngủn siêu đáng yêu nhưng di chuyển lại cực kỳ nhanh nhẹn và lém lỉnh.',
+                ratings: {
+                    affection: 5,
+                    shedding: 3,
+                    intelligence: 4,
+                    energy: 4,
+                    trainability: 4
+                },
+                careTips: {
+                    diet: 'Tránh để béo phì gây áp lực lên cột sống.',
+                    grooming: 'Chải lông 1-2 lần/tuần.',
+                    health: 'Theo dõi cột sống và ngực lõm di truyền.'
+                }
+            },
+            {
+                id: 'tabby-ta',
+                nameVi: 'Mèo Mướp (Mèo Ta)',
+                nameEn: 'Vietnamese Tabby Cat',
+                size: 'medium',
+                sizeText: 'Trung bình (3 - 5 kg)',
+                fur: 'short',
+                furText: 'Lông ngắn vằn mướp',
+                origin: 'Việt Nam 🇻🇳',
+                lifespan: '15 - 20 năm',
+                popularity: 'Phổ biến nhất VN',
+                image: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=800&q=80',
+                gallery: [
+                    'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=800&q=80'
+                ],
+                badges: ['Bắt chuột giỏi', 'Siêu khỏe mạnh', 'Dễ nuôi'],
+                description: 'Giống mèo bản địa Việt Nam cực kỳ thông minh, nhanh nhạy, sức đề kháng cao và khả năng bắt chuột thần sầu.',
+                ratings: {
+                    affection: 4,
+                    shedding: 2,
+                    intelligence: 5,
+                    energy: 5,
+                    trainability: 4
+                },
+                careTips: {
+                    diet: 'Rất dễ ăn, cá cơm, cơm trộn thịt chín.',
+                    grooming: 'Không tốn công chăm sóc lông.',
+                    health: 'Sức đề kháng tự nhiên siêu tốt.'
+                }
+            }
+        ];
+
+        // Câu hỏi Quiz
+        const quizQuestions = [
+            {
+                question: '1. Không gian sống hiện tại của bạn như thế nào?',
+                options: [
+                    { text: 'Chung cư / Phòng trọ nhỏ yên tĩnh', trait: 'calm' },
+                    { text: 'Nhà rộng rãi có sân vườn', trait: 'active' },
+                    { text: 'Sống cùng gia đình đông người', trait: 'friendly' }
+                ]
+            },
+            {
+                question: '2. Bạn có bao nhiêu thời gian rảnh mỗi ngày cho Mèo?',
+                options: [
+                    { text: 'Rất bận, chỉ rảnh 15-30 phút tối', trait: 'independent' },
+                    { text: 'Rảnh thoải mái, thích ôm ấp chải lông', trait: 'cuddly' },
+                    { text: 'Muốn dắt mèo đi dạo, chơi dĩa bay', trait: 'active' }
+                ]
+            },
+            {
+                question: '3. Bạn có ngại việc dọn lông mèo rụng không?',
+                options: [
+                    { text: 'Cực kỳ dị ứng/ngại dọn lông!', trait: 'no-fur' },
+                    { text: 'Bình thường, chải lông 1-2 lần/tuần ok', trait: 'short-fur' },
+                    { text: 'Mê lông xù dày, chăm vuốt là hạnh phúc', trait: 'long-fur' }
+                ]
+            },
+            {
+                question: '4. Bạn thích tính cách nào ở "Boss"?',
+                options: [
+                    { text: 'Ngoan ngoãn, điềm đạm, không quấy phá', trait: 'calm' },
+                    { text: 'Lém lỉnh, hay nói chuyện "Méo meo"', trait: 'vocal' },
+                    { text: 'Khỏe mạnh, tự lập, bắt chuột giỏi', trait: 'tough' }
+                ]
+            }
+        ];
+
+        let currentQuizIndex = 0;
+        let quizAnswers = [];
+
+        // App Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCatCards(catBreeds);
+            initQuiz();
+            setupEventListeners();
+        });
+
+        // Setup DOM Events
+        function setupEventListeners() {
+            // Search & Filters Listener
+            document.getElementById('catalog-search').addEventListener('input', filterCats);
+            document.getElementById('filter-size').addEventListener('change', filterCats);
+            document.getElementById('filter-fur').addEventListener('change', filterCats);
+            document.getElementById('filter-friendliness').addEventListener('change', filterCats);
+            document.getElementById('filter-energy').addEventListener('change', filterCats);
+
+            // Mobile menu toggle
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            document.querySelectorAll('.mobile-link').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+            });
+        }
+
+        // Render Cat Cards
+        function renderCatCards(data) {
+            const grid = document.getElementById('cat-cards-grid');
+            const noResults = document.getElementById('no-results');
+            const countText = document.getElementById('results-count');
+
+            grid.innerHTML = '';
+            countText.innerText = `Đang hiển thị: ${data.length} giống mèo`;
+
+            if (data.length === 0) {
+                noResults.classList.remove('hidden');
+                return;
+            } else {
+                noResults.classList.add('hidden');
+            }
+
+            data.forEach(cat => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl overflow-hidden border border-pastel-pink/30 shadow-cute hover:shadow-cute-hover hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group";
+                
+                card.innerHTML = `
+                    <div>
+                        <!-- Image Container -->
+                        <div class="relative h-48 overflow-hidden bg-pastel-cream">
+                            <img src="${cat.image}" alt="${cat.nameVi}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
+                            <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-pastel-dark text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
+                                ${cat.origin}
+                            </span>
+                        </div>
+
+                        <!-- Card Info -->
+                        <div class="p-5 space-y-3">
+                            <div>
+                                <h3 class="font-extrabold text-xl text-pastel-dark group-hover:text-pastel-accent transition-colors">${cat.nameVi}</h3>
+                                <p class="text-xs text-pastel-subtle italic">${cat.nameEn}</p>
+                            </div>
+
+                            <!-- Badges -->
+                            <div class="flex flex-wrap gap-1.5">
+                                ${cat.badges.map(b => `<span class="bg-pastel-peach/80 text-pastel-accent text-[11px] font-bold px-2 py-0.5 rounded-md">${b}</span>`).join('')}
+                            </div>
+
+                            <p class="text-xs text-pastel-dark/80 line-clamp-2 leading-relaxed">
+                                ${cat.description}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Footer Action -->
+                    <div class="px-5 pb-5 pt-2 border-t border-gray-50 flex items-center justify-between">
+                        <span class="text-xs text-pastel-subtle font-semibold">
+                            <i class="fa-solid fa-weight-hanging text-pastel-accent mr-1"></i>${cat.sizeText.split(' ')[0]}
+                        </span>
+                        <button onclick="openCatModal('${cat.id}')" class="px-3.5 py-1.5 bg-pastel-pink/40 hover:bg-pastel-accent hover:text-white text-pastel-accent font-bold text-xs rounded-xl transition-all flex items-center gap-1">
+                            Xem chi tiết <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Filtering Logic
+        function filterCats() {
+            const query = document.getElementById('catalog-search').value.toLowerCase().trim();
+            const sizeFilter = document.getElementById('filter-size').value;
+            const furFilter = document.getElementById('filter-fur').value;
+            const friendFilter = document.getElementById('filter-friendliness').value;
+            const energyFilter = document.getElementById('filter-energy').value;
+
+            const filtered = catBreeds.filter(cat => {
+                // Search term match
+                const matchQuery = cat.nameVi.toLowerCase().includes(query) || cat.nameEn.toLowerCase().includes(query);
+                
+                // Size Match
+                const matchSize = (sizeFilter === 'all') || (cat.size === sizeFilter);
+
+                // Fur Match
+                const matchFur = (furFilter === 'all') || (cat.fur === furFilter);
+
+                // Friendliness match
+                const matchFriend = (friendFilter === 'all') || (friendFilter === 'high' && cat.ratings.affection >= 4);
+
+                // Energy Match
+                let matchEnergy = true;
+                if (energyFilter === 'high') matchEnergy = cat.ratings.energy >= 4;
+                if (energyFilter === 'calm') matchEnergy = cat.ratings.energy <= 3;
+
+                return matchQuery && matchSize && matchFur && matchFriend && matchEnergy;
+            });
+
+            renderCatCards(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('catalog-search').value = '';
+            document.getElementById('hero-search').value = '';
+            document.getElementById('filter-size').value = 'all';
+            document.getElementById('filter-fur').value = 'all';
+            document.getElementById('filter-friendliness').value = 'all';
+            document.getElementById('filter-energy').value = 'all';
+            renderCatCards(catBreeds);
+        }
+
+        function scrollToSearchAndFilter() {
+            const val = document.getElementById('hero-search').value;
+            document.getElementById('catalog-search').value = val;
+            filterCats();
+            document.getElementById('search-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Modal Handler
+        function openCatModal(catId) {
+            const cat = catBreeds.find(c => c.id === catId);
+            if (!cat) return;
+
+            const modalContent = document.getElementById('modal-content');
+            
+            // Build rating bar HTML
+            const buildRating = (label, value) => {
+                const stars = '⭐'.repeat(value);
+                return `
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-bold text-pastel-dark">${label}</span>
+                        <span class="tracking-widest">${stars}</span>
+                    </div>
+                `;
+            };
+
+            modalContent.innerHTML = `
+                <div class="grid md:grid-cols-2 gap-6 items-start">
+                    <!-- Image Gallery Mini -->
+                    <div class="space-y-3">
+                        <div class="h-64 rounded-2xl overflow-hidden bg-gray-100 shadow-sm">
+                            <img id="modal-main-img" src="${cat.image}" alt="${cat.nameVi}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex gap-2">
+                            ${cat.gallery.map(img => `
+                                <img src="${img}" onclick="document.getElementById('modal-main-img').src='${img}'" class="w-16 h-16 rounded-xl object-cover cursor-pointer hover:opacity-80 border-2 border-transparent hover:border-pastel-accent transition-all">
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Main Info Header -->
+                    <div class="space-y-4">
+                        <div>
+                            <span class="text-xs font-bold text-pastel-accent bg-pastel-peach px-2.5 py-1 rounded-md">${cat.origin}</span>
+                            <h2 class="text-2xl font-extrabold text-pastel-dark mt-1">${cat.nameVi}</h2>
+                            <p class="text-xs text-pastel-subtle italic">${cat.nameEn}</p>
+                        </div>
+
+                        <p class="text-xs text-pastel-dark leading-relaxed">${cat.description}</p>
+
+                        <!-- Quick Meta Table -->
+                        <div class="grid grid-cols-2 gap-2 bg-pastel-cream p-3 rounded-xl text-xs font-medium border border-pastel-pink/20">
+                            <div><strong class="text-pastel-subtle">Cân nặng:</strong> ${cat.sizeText}</div>
+                            <div><strong class="text-pastel-subtle">Tuổi thọ:</strong> ${cat.lifespan}</div>
+                            <div><strong class="text-pastel-subtle">Độ phổ biến:</strong> ${cat.popularity}</div>
+                            <div><strong class="text-pastel-subtle">Kiểu lông:</strong> ${cat.furText}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rating Indices -->
+                <div class="bg-white p-4 rounded-2xl border border-pastel-pink/30 space-y-2">
+                    <h3 class="font-extrabold text-sm text-pastel-dark mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-sliders text-pastel-accent"></i> Chỉ số đặc trưng
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
+                        ${buildRating('Mức độ quấn chủ', cat.ratings.affection)}
+                        ${buildRating('Mức độ rụng lông', cat.ratings.shedding)}
+                        ${buildRating('Độ thông minh', cat.ratings.intelligence)}
+                        ${buildRating('Nhu cầu vận động', cat.ratings.energy)}
+                        ${buildRating('Dễ huấn luyện', cat.ratings.trainability)}
+                    </div>
+                </div>
+
+                <!-- Care Guide Tab -->
+                <div class="space-y-3">
+                    <h3 class="font-extrabold text-sm text-pastel-dark flex items-center gap-1.5">
+                        <i class="fa-solid fa-notes-medical text-emerald-500"></i> Mẹo chăm sóc chuẩn
+                    </h3>
+                    <div class="grid sm:grid-cols-3 gap-3 text-xs">
+                        <div class="p-3 bg-pastel-peach/40 rounded-xl border border-pastel-pink/30">
+                            <strong class="block text-pastel-accent font-bold mb-1"><i class="fa-solid fa-utensils mr-1"></i> Dinh dưỡng</strong>
+                            ${cat.careTips.diet}
+                        </div>
+                        <div class="p-3 bg-pastel-mint/50 rounded-xl border border-emerald-200">
+                            <strong class="block text-emerald-600 font-bold mb-1"><i class="fa-solid fa-soap mr-1"></i> Vệ sinh lông</strong>
+                            ${cat.careTips.grooming}
+                        </div>
+                        <div class="p-3 bg-pastel-yellow/50 rounded-xl border border-amber-200">
+                            <strong class="block text-amber-700 font-bold mb-1"><i class="fa-solid fa-heart-pulse mr-1"></i> Sức khỏe</strong>
+                            ${cat.careTips.health}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('cat-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('cat-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Interactive Quiz Logic
+        function initQuiz() {
+            currentQuizIndex = 0;
+            quizAnswers = [];
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.getElementById('quiz-result').classList.add('hidden');
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            const q = quizQuestions[currentQuizIndex];
+            const progress = ((currentQuizIndex + 1) / quizQuestions.length) * 100;
+            
+            document.getElementById('quiz-progress-text').innerText = `Câu hỏi ${currentQuizIndex + 1}/${quizQuestions.length}`;
+            document.getElementById('quiz-progress-percent').innerText = `${Math.round(progress)}%`;
+            document.getElementById('quiz-progress-bar').style.width = `${progress}%`;
+
+            const container = document.getElementById('quiz-content');
+            container.innerHTML = `
+                <h3 class="font-extrabold text-lg text-pastel-dark mb-4">${q.question}</h3>
+                <div class="space-y-3">
+                    ${q.options.map((opt, i) => `
+                        <button onclick="handleQuizAnswer('${opt.trait}')" class="w-full text-left p-4 rounded-xl border-2 border-pastel-pink/30 hover:border-pastel-accent hover:bg-pastel-peach/30 transition-all font-semibold text-sm text-pastel-dark flex items-center justify-between group">
+                            <span>${opt.text}</span>
+                            <i class="fa-solid fa-arrow-right opacity-0 group-hover:opacity-100 text-pastel-accent transition-opacity"></i>
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function handleQuizAnswer(trait) {
+            quizAnswers.push(trait);
+            if (currentQuizIndex < quizQuestions.length - 1) {
+                currentQuizIndex++;
+                renderQuizQuestion();
+            } else {
+                showQuizResult();
+            }
+        }
+
+        function showQuizResult() {
+            document.getElementById('quiz-container').classList.add('hidden');
+            const resultBox = document.getElementById('quiz-result');
+            resultBox.classList.remove('hidden');
+
+            // Suggest cat based on answer heuristics
+            let matchedCat = catBreeds[0]; // default British Shorthair
+            
+            if (quizAnswers.includes('no-fur')) {
+                matchedCat = catBreeds.find(c => c.id === 'sphynx') || catBreeds[5];
+            } else if (quizAnswers.includes('active')) {
+                matchedCat = catBreeds.find(c => c.id === 'bengal') || catBreeds[7];
+            } else if (quizAnswers.includes('cuddly') || quizAnswers.includes('long-fur')) {
+                matchedCat = catBreeds.find(c => c.id === 'ragdoll') || catBreeds[3];
+            } else if (quizAnswers.includes('tough')) {
+                matchedCat = catBreeds.find(c => c.id === 'tabby-ta') || catBreeds[9];
+            }
+
+            const card = document.getElementById('quiz-result-card');
+            card.innerHTML = `
+                <img src="${matchedCat.image}" alt="${matchedCat.nameVi}" class="w-24 h-24 rounded-2xl object-cover shadow-sm">
+                <div class="space-y-1">
+                    <h4 class="font-extrabold text-xl text-pastel-dark">${matchedCat.nameVi}</h4>
+                    <p class="text-xs text-pastel-subtle">${matchedCat.nameEn} • ${matchedCat.origin}</p>
+                    <p class="text-xs text-pastel-dark line-clamp-2">${matchedCat.description}</p>
+                    <button onclick="openCatModal('${matchedCat.id}')" class="text-xs font-bold text-pastel-accent underline pt-1 inline-block">Xem thông tin chi tiết</button>
+                </div>
+            `;
+        }
+
+        function restartQuiz() {
+            initQuiz();
+        }
+
+        // Web Audio API Synthesizer for Meow Sounds
+        function playMeowSound(type) {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+
+                if (type === 'happy') {
+                    // Quick high-pitched cute meow
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+
+                    const now = ctx.currentTime;
+                    osc.frequency.setValueAtTime(550, now);
+                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
+                    osc.frequency.exponentialRampToValueAtTime(440, now + 0.35);
+
+                    gain.gain.setValueAtTime(0, now);
+                    gain.gain.linearRampToValueAtTime(0.3, now + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } 
+                else if (type === 'purr') {
+                    // Low rumbling purr sound
+                    const bufferSize = ctx.sampleRate * 1.5;
+                    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                    const data = buffer.getChannelData(0);
+
+                    for (let i = 0; i < bufferSize; i++) {
+                        data[i] = (Math.random() * 2 - 1) * Math.sin(i / 100);
+                    }
+
+                    const noise = ctx.createBufferSource();
+                    noise.buffer = buffer;
+
+                    const filter = ctx.createBiquadFilter();
+                    filter.type = 'lowpass';
+                    filter.frequency.value = 120;
+
+                    const gain = ctx.createGain();
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+
+                    noise.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    noise.start();
+                } 
+                else if (type === 'hungry') {
+                    // Longer meow
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+
+                    const now = ctx.currentTime;
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.linearRampToValueAtTime(700, now + 0.3);
+                    osc.frequency.linearRampToValueAtTime(300, now + 0.7);
+
+                    gain.gain.setValueAtTime(0, now);
+                    gain.gain.linearRampToValueAtTime(0.4, now + 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.7);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(now);
+                    osc.stop(now + 0.7);
+                }
+                else if (type === 'curious') {
+                    // Short chirp sound
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+
+                    const now = ctx.currentTime;
+                    osc.frequency.setValueAtTime(700, now);
+                    osc.frequency.exponentialRampToValueAtTime(1100, now + 0.12);
+
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(now);
+                    osc.stop(now + 0.12);
+                }
+            } catch (e) {
+                console.log("Audio play error:", e);
+            }
+        }
+    </script>
+</body>
+</html>
